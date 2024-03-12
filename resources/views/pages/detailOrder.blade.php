@@ -39,7 +39,21 @@
 <script type="text/javascript">
     var payButton = document.getElementById('pay-button');
     payButton.addEventListener('click', function () {
-        window.snap.pay('{{ $snapToken }}');
+        window.snap.pay('{{ $snapToken }}', {
+            onSuccess: function(result){
+            window.location.href = "{{ route('history') }}";
+            alert("payment success!"); console.log(result);
+            },
+            onPending: function(result){
+            alert("wating your payment!"); console.log(result);
+            },
+            onError: function(result){
+            alert("payment failed!"); console.log(result);
+            },
+            onClose: function(){
+            alert('you closed the popup without finishing the payment');
+            }
+        });
     });
 </script>
 
