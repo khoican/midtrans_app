@@ -58,21 +58,25 @@
 
                 <input type="hidden" name="cart_id" value="{{ $cart->id }}">
 
-                <button type="submit" class="btn btn-primary w-25">Checkout</button>
+                <button type="submit" class="btn btn-primary w-25" id="pay-button">Checkout</button>
             </div>
         </form>
     </div>
 </div>
 
-<script>
-    const qty = document.getElementById('qty');
-    const total = document.getElementById('total');
-    const total_price = document.getElementById('total_price');
-    qty.addEventListener('input', function () {
-        let set_total_price = qty.value * {{ $cart->product->price }}
-        total.innerText = 'Rp.' + set_total_price
-        total_price.value = set_total_price
-    })
+<script type="text/javascript">
+    function getTotalPrice() {
+        const qty = document.getElementById('qty');
+        const total = document.getElementById('total');
+        const total_price = document.getElementById('total_price');
+        qty.addEventListener('input', function () {
+            let set_total_price = qty.value * {{ $cart->product->price }}
+            total.innerText = 'Rp.' + set_total_price
+            total_price.value = set_total_price
+        })
+    }
+
+    getTotalPrice()
 </script>
 
 @endsection

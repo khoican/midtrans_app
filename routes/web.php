@@ -24,5 +24,6 @@ Route::post('cart/store', [CartController::class, 'store'])->name('cart.store');
 
 Route::get('checkout/{id}', [CartController::class, 'checkout'])->name('checkout');
 Route::post('checkout', [OrderController::class, 'store'])->name('checkout.store');
+Route::get('order-detail/{id}', [OrderController::class, 'detail'])->name('checkout.detail');
 
 Route::get('history', [OrderController::class, 'index'])->name('history');

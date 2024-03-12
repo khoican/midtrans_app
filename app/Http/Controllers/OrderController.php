@@ -48,12 +48,38 @@ class OrderController extends Controller
                 'product_price' => $request->product_price,
                 'product_qty' => $request->product_qty,
             ]);
+            return $order;
         });
-        $order;
 
         $cart = Cart::find($request->cart_id);
         $cart->delete();
 
-        return redirect('/history');
+        return redirect('order-detail/'.$order->id);
+    }
+
+    public function detail (Request $request, $id) {
+        $order = Order::find($id);
+        $detail = DetailOrder::where('order_id', $id)->first();
+
+        \Midtrans\Config::$serverKey = config('midtrans.server_key');
+        \Midtrans\Config::$isProduction = false;
+        \Midtrans\Config::$isSanitized = true;
+        \Midtrans\Config::$is3ds = true;
+
+        $params = array(
+            'transaction_details' => array(
+                'order_id' => $order->id,
+                'gross_amount' => $order->total,
+            ),
+            'customer_details' => array(
+                'first_name' => $order->name,
+                'email' => $order->email,
+                'phone' => $order->phone,
+            ),
+        );
+
+        $snapToken = \Midtrans\Snap::getSnapToken($params);
+
+        return view('pages.detailOrder', compact('order', 'detail', 'snapToken'));
     }
 }
