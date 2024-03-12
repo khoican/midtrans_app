@@ -62,7 +62,7 @@ class OrderController extends Controller
         $detail = DetailOrder::where('order_id', $id)->first();
 
         \Midtrans\Config::$serverKey = config('midtrans.server_key');
-        \Midtrans\Config::$isProduction = false;
+        \Midtrans\Config::$isProduction = true;
         \Midtrans\Config::$isSanitized = true;
         \Midtrans\Config::$is3ds = true;
 
@@ -88,7 +88,7 @@ class OrderController extends Controller
         $hashed = hash('sha512', $request->order_id.$request->status_code.$request->gross_amount.$serverKey);
 
         if($hashed == $request->signature_key) {
-            if($request->transaction_status == 'capture') {
+            if($request->transaction_status == 'capture' && $request->payment_type == 'credit_card' && $request->fraud_status == 'accept' or $request->transaction_status == 'settlement') {
                 $order = Order::find($request->order_id);
                 $order->update([
                     'status' => 'success'
